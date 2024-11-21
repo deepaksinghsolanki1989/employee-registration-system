@@ -1,0 +1,17 @@
+{
+  "name": "employee-registration-system",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "api": "npm run --prefix ./api start:dev",
+    "app": "npm run --prefix ./app dev",
+    "start": "concurrently --kill-others \"npm run app\" \"npm run api\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
