@@ -1,11 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import ErrorMessages from "@/components/ErrorMessages";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,6 +18,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { SIGNIN, SIGNUP } from "@/redux/actionTypes";
+import { RootState } from "@/redux/store";
 
 type FormType = "sign-in" | "sign-up";
 
@@ -27,40 +40,70 @@ const authFormSchema = (formType: FormType) => {
         : z.string().optional(),
     employeeCode:
       formType === "sign-up"
-        ? z.string().min(1, "Employee code is required").max(10)
+        ? z
+            .string()
+            .min(1, "Employee code is required")
+            .max(10, "Employee code must not exceed 10 characters.")
         : z.string().optional(),
     email: z.string().min(1, "Email is required").email(),
+    password:
+      formType === "sign-up"
+        ? z
+            .string()
+            .min(1, "Password is required.")
+            .min(8, "Password must be at least 8 characters long.")
+            .regex(
+              /[A-Z]/,
+              "Password must include at least one uppercase letter."
+            )
+            .regex(
+              /[a-z]/,
+              "Password must include at least one lowercase letter."
+            )
+            .regex(/\d/, "Password must include at least one number.")
+            .regex(
+              /[!@#$%^&*(),.?":{}|<>]/,
+              "Password must include at least one special character."
+            )
+        : z.string().min(1, "Password is required."),
   });
 };
 
 const AuthForm = ({ type }: { type: FormType }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const dispatch = useDispatch();
+  const { loading, error, success } = useSelector(
+    (state: RootState) => state.auth
+  );
+
   const formSchema = authFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullName: "",
-      email: "",
       employeeCode: "",
+      email: "",
+      password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log({ values });
+  useEffect(() => {
+    if (!loading && success) {
+      if (type === "sign-up") {
+        setIsOpen(true);
+      } else {
+        router.push("/");
+      }
+    }
+  }, [loading, success]);
 
-    setIsLoading(true);
-    setErrorMessage("");
-
-    try {
-      router.push(type === "sign-up" ? "/sign-in" : "/");
-    } catch {
-      setErrorMessage("Failed to create account. Please try again.");
-    } finally {
-      console.log({ isLoading });
-      setIsLoading(false);
+  function onSubmit(payload: z.infer<typeof formSchema>) {
+    if (type === "sign-up") {
+      dispatch({ type: SIGNUP, payload });
+    } else if (type === "sign-in") {
+      dispatch({ type: SIGNIN, payload });
     }
   }
 
@@ -71,6 +114,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
           <h1 className="form-title">
             {type === "sign-in" ? "Sign In" : "Sign Up"}
           </h1>
+          <ErrorMessages error={error} />
           {type === "sign-up" && (
             <>
               <FormField
@@ -136,13 +180,33 @@ const AuthForm = ({ type }: { type: FormType }) => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <div className="shad-form-item">
+                  <FormLabel className="shad-form-label">Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Enter your password"
+                      className="shad-input"
+                      {...field}
+                    />
+                  </FormControl>
+                </div>
+                <FormMessage className="shad-form-message" />
+              </FormItem>
+            )}
+          />
           <Button
             type="submit"
             className="form-submit-button"
-            disabled={isLoading}
+            disabled={loading}
           >
             {type === "sign-in" ? "Sign In" : "Sign Up"}
-            {isLoading && (
+            {loading && (
               <Image
                 src="/assets/icons/loader.svg"
                 alt="logo"
@@ -152,9 +216,6 @@ const AuthForm = ({ type }: { type: FormType }) => {
               />
             )}
           </Button>
-
-          {errorMessage && <p className="error-message">{errorMessage}</p>}
-
           <div className="body-2 flex justify-center">
             <p className="text-light-100">
               {type === "sign-in"
@@ -170,6 +231,43 @@ const AuthForm = ({ type }: { type: FormType }) => {
           </div>
         </form>
       </Form>
+      {type === "sign-up" && !loading && success && (
+        <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+          <AlertDialogContent className="shad-alert-dialog">
+            <AlertDialogHeader className="relative flex justify-center">
+              <AlertDialogTitle className="h2 text-center ">
+                <span className="text-brand">Account Created</span>
+                <Image
+                  src="/assets/icons/close-dark.svg"
+                  alt="close"
+                  width={20}
+                  height={20}
+                  onClick={() => setIsOpen(false)}
+                  className="otp-close-button"
+                />
+              </AlertDialogTitle>
+              <AlertDialogDescription className="subtitle-2 text-center text-light-100">
+                Your account is created and pending for approval. We will notify
+                once you account approved by admin.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <div className="flex w-full flex-col gap-4 items-center">
+                <AlertDialogAction
+                  onClick={() => {
+                    setIsOpen(false);
+                    form.reset();
+                  }}
+                  className="shad-submit-btn h-12 w-1/4"
+                  type="button"
+                >
+                  Close
+                </AlertDialogAction>
+              </div>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </>
   );
 };

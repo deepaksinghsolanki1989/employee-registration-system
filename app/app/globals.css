@@ -242,7 +242,10 @@
 
   /* Type page */
   .page-container {
-    @apply mx-auto flex w-full max-w-7xl flex-col items-center gap-8 !important;
+    @apply mx-auto flex w-full max-w-7xl flex-col gap-8 !important;
+  }
+  .page-form {
+    @apply flex w-full flex-col space-y-6 transition-all lg:w-2/4 lg:space-y-8 !important;
   }
   .total-size-section {
     @apply flex mt-2 flex-col justify-between sm:flex-row sm:items-center !important;
@@ -308,6 +311,9 @@
   .error-message {
     @apply body-2 mx-auto w-fit rounded-xl bg-error/5 px-8 py-4 text-center text-error !important;
   }
+  .error-message-items {
+    @apply mt-1.5 list-disc list-inside text-left;
+  }
 
   /* Card */
   .file-card {
@@ -356,6 +362,10 @@
 
   .error-toast {
     @apply bg-red !rounded-[10px] !important;
+  }
+
+  .success-toast {
+    @apply bg-green !rounded-[10px] !important;
   }
 
   /* Header */

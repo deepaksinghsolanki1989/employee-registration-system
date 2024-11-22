@@ -3,26 +3,25 @@ export const navItems = [
     name: "Dashboard",
     icon: "/assets/icons/dashboard.svg",
     url: "/",
+    roles: ["admin", "employee"],
   },
   {
-    name: "Documents",
+    name: "Employees",
     icon: "/assets/icons/documents.svg",
-    url: "/documents",
+    url: "/employees",
+    roles: ["admin", "employee"],
   },
   {
-    name: "Images",
+    name: "Arts",
     icon: "/assets/icons/images.svg",
-    url: "/images",
+    url: "/arts",
+    roles: ["admin", "employee"],
   },
   {
-    name: "Media",
-    icon: "/assets/icons/video.svg",
-    url: "/media",
-  },
-  {
-    name: "Others",
+    name: "Change Password",
     icon: "/assets/icons/others.svg",
-    url: "/others",
+    url: "/change-password",
+    roles: ["admin", "employee"],
   },
 ];
 
