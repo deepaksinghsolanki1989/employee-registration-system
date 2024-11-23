@@ -92,6 +92,11 @@ export class AuthService {
       throw new ForbiddenException('Credencials incorrect');
     }
 
+    // If user not active throw exception
+    if (!user.isActive) {
+      throw new ForbiddenException('You account yet to active');
+    }
+
     const tokens = await this.getTokens(user.id, user.email);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 

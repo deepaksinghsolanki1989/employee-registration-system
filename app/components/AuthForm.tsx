@@ -27,7 +27,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { SIGNIN, SIGNUP } from "@/redux/actionTypes";
+import { SIGNIN, SIGNUP } from "@/redux/action.types";
 import { RootState } from "@/redux/store";
 
 type FormType = "sign-in" | "sign-up";

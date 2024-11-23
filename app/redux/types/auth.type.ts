@@ -29,10 +29,8 @@ export interface SignInPayload {
 // changePassword
 
 export interface AuthPayload {
-  data: {
-    data: null;
-    error: null;
-    message: string;
-    statusCode: number | string;
-  };
+  data: null;
+  error: null;
+  message: string;
+  statusCode: number | string;
 }

@@ -22,14 +22,16 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
       select: {
         id: true,
         fullName: true,
+        employeeCode: true,
         email: true,
         password: false,
         isEmailVerified: true,
         isActive: true,
-        employeeCode: true,
+        emailToken: false,
+        forgotPasswordToken: false,
+        refreshToken: false,
         createdAt: true,
         updatedAt: true,
-        refreshToken: false,
       },
     });
 

@@ -1,4 +1,4 @@
-const Dashboard = async () => {
+const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <section>Dashboard</section>

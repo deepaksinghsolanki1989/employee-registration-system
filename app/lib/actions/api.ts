@@ -51,22 +51,27 @@ axiosClient.interceptors.response.use(
       originalRequest.url !== "/login" &&
       originalRequest.url !== "/refresh-token"
     ) {
-      if (!isRefreshing) {
+      const refreshToken = localStorage.getItem("refresh-token");
+
+      if (!isRefreshing && refreshToken) {
         isRefreshing = true;
 
-        const refresh = localStorage.getItem("refresh-token");
-
         axiosClient
-          .post("/refresh-token", { refresh })
-          .then((response) => {
-            localStorage.setItem("access-token", response.data.access);
+          .get("/refresh-token", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("refresh-token")}`,
+            },
+          })
+          .then((response: any) => {
+            localStorage.setItem("access-token", response.accessToken);
+            localStorage.setItem("refresh-token", response.refreshToken);
 
             isRefreshing = false;
-            onRrefreshed(response.data.access);
+            onRrefreshed(response.accessToken);
           })
           .catch(() => {
-            // localStorage.remove("access-token");
-            // localStorage.remove("refresh-token");
+            localStorage.removeItem("access-token");
+            localStorage.removeItem("refresh-token");
           });
 
         const retryOriginalRequest = new Promise((resolve) => {
@@ -78,6 +83,9 @@ axiosClient.interceptors.response.use(
         });
 
         return retryOriginalRequest;
+      } else {
+        console.log("IGI");
+        window.location.href = "/sign-in";
       }
     } else {
       return Promise.reject(data);

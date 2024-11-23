@@ -1,33 +1,52 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Image from "next/image";
+import { redirect } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import MobileNavigation from "@/components/MobileNavigation";
 import Header from "@/components/Header";
-// import { getCurrentUser } from "@/lib/actions/user.actions";
-import { redirect } from "next/navigation";
 import { Toaster } from "@/components/ui/toaster";
+import { GET_CURRENT_USER } from "@/redux/action.types";
+import { RootState } from "@/redux/store";
 
-export const dynamic = "force-dynamic";
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  const dispatch = useDispatch();
+  const { loading, error, user } = useSelector(
+    (state: RootState) => state.auth
+  );
 
-const Layout = async ({ children }: { children: React.ReactNode }) => {
-  const currentUser = {
-    fullName: "Deepak Singh Solanki",
-    employeeCode: "DEEPAK1989",
-    email: "deepak@gmail.com",
-  }; // await getCurrentUser();
+  useEffect(() => {
+    dispatch({ type: GET_CURRENT_USER });
+  }, []);
 
-  if (!currentUser) return redirect("/sign-in");
+  useEffect(() => {
+    if (error && !user) return redirect("/sign-in");
+  }, [error, user]);
 
   return (
     <main className="flex h-screen">
-      <Sidebar {...currentUser} />
-
-      <section className="flex h-full flex-1 flex-col">
-        <MobileNavigation {...currentUser} />
-        <Header />
-        <div className="main-content">{children}</div>
-      </section>
-
-      <Toaster />
+      {!user && loading && (
+        <Image
+          src="/assets/icons/loader.svg"
+          alt="logo"
+          width={24}
+          height={24}
+          className="ml-2 animate-spin"
+        />
+      )}
+      {user && (
+        <>
+          <Sidebar {...user} />
+          <section className="flex h-full flex-1 flex-col">
+            <MobileNavigation {...user} />
+            <Header />
+            <div className="main-content">{children}</div>
+          </section>
+          <Toaster />
+        </>
+      )}
     </main>
   );
 };

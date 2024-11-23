@@ -60,6 +60,17 @@ export class AuthController {
     return this.authService.signout(userId);
   }
 
+  @UseGuards(AccessTokenGuard)
+  @Get('user/me')
+  getMe(@GetUser() user: User) {
+    return {
+      data: user,
+      error: null,
+      message: 'User fetched successfully.',
+      statusCode: HttpStatus.OK,
+    };
+  }
+
   @UseGuards(RefreshTokenGuard)
   @Get('refresh-token')
   refreshTokens(

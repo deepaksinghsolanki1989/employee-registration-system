@@ -13,7 +13,7 @@ const Header = () => {
       <div className="header-wrapper">
         <form
           action={async () => {
-            "use server";
+            // "use server";
 
             await signOutUser();
           }}

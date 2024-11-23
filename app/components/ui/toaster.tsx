@@ -12,7 +12,6 @@ import {
 
 export function Toaster() {
   const { toasts } = useToast();
-  console.log({ toasts });
 
   return (
     <ToastProvider>

@@ -1,4 +1,4 @@
-const Arts = async () => {
+const Arts = () => {
   return (
     <div className="page-container">
       <section className="w-full">

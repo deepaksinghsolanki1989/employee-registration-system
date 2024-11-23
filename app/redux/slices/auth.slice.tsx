@@ -54,10 +54,11 @@ const authSlice = createSlice({
       state.error = null;
       state.success = null;
     },
-    getCurrentUserSuccess: (state) => {
+    getCurrentUserSuccess: (state, { payload }) => {
       state.loading = false;
       state.error = null;
       state.success = true;
+      state.user = payload;
     },
     getCurrentUserFailed: (state) => {
       state.loading = false;

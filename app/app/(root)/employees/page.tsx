@@ -1,4 +1,4 @@
-const Employees = async () => {
+const Employees = () => {
   return (
     <div className="page-container">
       <section className="w-full">

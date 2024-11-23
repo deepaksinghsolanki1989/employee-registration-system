@@ -9,13 +9,15 @@ import {
   SIGNUP_FAILED,
   SIGNIN_SUCCESS,
   SIGNIN_FAILED,
-} from "@/redux/actionTypes";
+  GET_CURRENT_USER_SUCCESS,
+  GET_CURRENT_USER_FAILED,
+} from "@/redux/action.types";
 import {
   AuthPayload,
   SignInPayload,
   SignUpPayload,
 } from "@/redux/types/auth.type";
-import { signin, signup } from "@/lib/actions/auth.actions";
+import { getCurrentUser, signin, signup } from "@/lib/actions/auth.actions";
 
 // function* checkAuth(): Generator {
 //   try {
@@ -126,11 +128,16 @@ function* handleSignin(action: {
   }
 }
 
-function* handleGetCurrentUser(action: {
-  type: string;
-  payload: unknown;
-}): Generator {
-  console.log({ action });
+function* handleGetCurrentUser(): Generator {
+  try {
+    const { data } = (yield call(getCurrentUser)) as AuthPayload;
+    yield put({ type: GET_CURRENT_USER_SUCCESS, payload: data });
+  } catch (error: any) {
+    yield put({
+      type: GET_CURRENT_USER_FAILED,
+      payload: { message: error.message },
+    });
+  }
 }
 
 function* handleRefreshToken(action: {

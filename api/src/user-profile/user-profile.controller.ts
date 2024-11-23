@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { GetUser } from '@/auth/decorator';
@@ -11,13 +11,6 @@ import { UserProfileService } from '@/user-profile/user-profile.service';
 @Controller()
 export class UserProfileController {
   constructor(private userProfileService: UserProfileService) {}
-
-  @Get('user/me')
-  getMe(@GetUser() user: User) {
-    delete user.password;
-
-    return user;
-  }
 
   @Post('change-password')
   changePassword(@GetUser() user: User, @Body() dto: ChangePasswordDto) {
