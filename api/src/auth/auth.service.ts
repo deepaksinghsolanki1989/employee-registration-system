@@ -174,7 +174,7 @@ export class AuthService {
         email,
       },
       {
-        expiresIn: '15m',
+        expiresIn: '15d',
         secret: this.config.get('JWT_ACCESS_SECRET'),
       },
     );

@@ -1,15 +1,12 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Search from "@/components/Search";
-// import { signOutUser } from "@/lib/actions/user.actions";
 
 const Header = () => {
   const signOutUser = () => {};
 
   return (
     <header className="header">
-      <Search />
       <div className="header-wrapper">
         <form
           action={async () => {

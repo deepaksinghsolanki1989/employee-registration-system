@@ -370,7 +370,7 @@
 
   /* Header */
   .header {
-    @apply hidden items-center justify-between gap-5 p-5 sm:flex lg:py-7 xl:gap-10 !important;
+    @apply hidden items-center justify-end gap-5 p-5 sm:flex lg:py-7 xl:gap-10 !important;
   }
   .header-wrapper {
     @apply flex-center min-w-fit gap-4 !important;
@@ -460,6 +460,27 @@
   .thumbnail-image {
     @apply size-full object-cover object-center !important;
   }
+
+  /* Data Table */
+  .table-query-section {
+    @apply flex mt-2 flex-col justify-between sm:flex-row sm:items-center !important;
+  }
+
+  /* table {
+    @apply w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400;
+  }
+  thead {
+    @apply text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400;
+  }
+  th {
+    @apply px-6 py-3;
+  }
+  .table-row {
+    @apply bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600;
+  }
+  td {
+    @apply px-6 py-4;
+  } */
 }
 
 @layer base {
