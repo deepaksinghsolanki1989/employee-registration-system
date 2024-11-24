@@ -84,7 +84,6 @@ axiosClient.interceptors.response.use(
 
         return retryOriginalRequest;
       } else {
-        console.log("IGI");
         window.location.href = "/sign-in";
       }
     } else {

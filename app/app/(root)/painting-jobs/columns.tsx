@@ -1,10 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import ActionDropdown from "@/components/ActionDropdown";
-import {
-  APPROVE_EMPLOYEE,
-  DELETE_EMPLOYEE,
-  GET_EMPLOYEES,
-} from "@/redux/action.types";
+import { DELETE_PAINTING_JOB, GET_PAINTING_JOBS } from "@/redux/action.types";
 import DetailRow from "@/components/DetailRow";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
@@ -16,28 +12,17 @@ const actionsDropdownItems = [
     value: "details",
   },
   {
-    label: "Approve",
-    icon: "/assets/icons/edit.svg",
-    value: "approve",
-    type: APPROVE_EMPLOYEE,
-  },
-  {
     label: "Delete",
     icon: "/assets/icons/delete.svg",
     value: "delete",
-    type: DELETE_EMPLOYEE,
+    type: DELETE_PAINTING_JOB,
   },
 ];
 
-const renderDetails = (data: Employee) => (
+const renderDetails = (data: PaintingJob) => (
   <div className="space-y-4 px-2 pt-2">
-    <DetailRow label="Employee Name:" value={data.fullName} />
-    <DetailRow label="Employee Code:" value={data.employeeCode} />
-    <DetailRow label="Email:" value={data.email} />
-    <DetailRow
-      label="isActive:"
-      value={data.isActive ? "Approved" : "Not Approved"}
-    />
+    <DetailRow label="Title:" value={data.title} />
+    <DetailRow label="Description:" value={data.description} />
     <DetailRow
       label="Created At:"
       value={new Intl.DateTimeFormat("en", {
@@ -52,63 +37,34 @@ const renderDetails = (data: Employee) => (
   </div>
 );
 
-export const columns: ColumnDef<Employee>[] = [
+export const columns: ColumnDef<PaintingJob>[] = [
   {
-    accessorKey: "fullName",
+    accessorKey: "title",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Employee Name
+          Title
           <ArrowUpDown />
         </Button>
       );
     },
   },
   {
-    accessorKey: "employeeCode",
+    accessorKey: "description",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Employee Code
+          Description
           <ArrowUpDown />
         </Button>
       );
     },
-  },
-  {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "isActive",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Approved?
-          <ArrowUpDown />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (row.getValue("isActive") ? "Approved" : "Not Approved"),
   },
   {
     accessorKey: "createdAt",
@@ -139,17 +95,13 @@ export const columns: ColumnDef<Employee>[] = [
     header: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const isActive = row.getValue("isActive");
-
       return (
         <ActionDropdown
-          name="employees"
+          name="paintingJobs"
           renderDetails={renderDetails}
-          actionsDropdownItems={actionsDropdownItems.filter((item) =>
-            item.value === "approve" ? !isActive : true
-          )}
+          actionsDropdownItems={actionsDropdownItems}
           data={row.original}
-          fetchAction={GET_EMPLOYEES}
+          fetchAction={GET_PAINTING_JOBS}
         />
       );
     },

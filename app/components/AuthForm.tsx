@@ -30,8 +30,6 @@ import {
 import { SIGNIN, SIGNUP } from "@/redux/action.types";
 import { RootState } from "@/redux/store";
 
-type FormType = "sign-in" | "sign-up";
-
 const authFormSchema = (formType: FormType) => {
   return z.object({
     fullName:

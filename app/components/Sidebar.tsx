@@ -2,9 +2,15 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { avatarPlaceholderUrl, navItems } from "@/constants";
+import {
+  adminNavItems,
+  avatarPlaceholderUrl,
+  employeesNavItems,
+} from "@/constants";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 interface Props {
   fullName: string;
@@ -14,6 +20,8 @@ interface Props {
 
 const Sidebar = ({ fullName, employeeCode, email }: Props) => {
   const pathname = usePathname();
+
+  const { user } = useSelector((state: RootState) => state.auth);
 
   return (
     <aside className="sidebar">
@@ -37,28 +45,30 @@ const Sidebar = ({ fullName, employeeCode, email }: Props) => {
 
       <nav className="sidebar-nav">
         <ul className="flex flex-1 flex-col gap-6">
-          {navItems.map(({ url, name, icon }) => (
-            <Link key={name} href={url} className="lg:w-full">
-              <li
-                className={cn(
-                  "sidebar-nav-item",
-                  pathname === url && "shad-active",
-                )}
-              >
-                <Image
-                  src={icon}
-                  alt={name}
-                  width={24}
-                  height={24}
+          {(user?.employeeCode === "" ? adminNavItems : employeesNavItems).map(
+            ({ url, name, icon }) => (
+              <Link key={name} href={url} className="lg:w-full">
+                <li
                   className={cn(
-                    "nav-icon",
-                    pathname === url && "nav-icon-active",
+                    "sidebar-nav-item",
+                    pathname === url && "shad-active"
                   )}
-                />
-                <p className="hidden lg:block">{name}</p>
-              </li>
-            </Link>
-          ))}
+                >
+                  <Image
+                    src={icon}
+                    alt={name}
+                    width={24}
+                    height={24}
+                    className={cn(
+                      "nav-icon",
+                      pathname === url && "nav-icon-active"
+                    )}
+                  />
+                  <p className="hidden lg:block">{name}</p>
+                </li>
+              </Link>
+            )
+          )}
         </ul>
       </nav>
       <div className="sidebar-user-info">

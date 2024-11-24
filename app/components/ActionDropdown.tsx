@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Dialog,
   DialogContent,
@@ -15,69 +18,60 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
-import Image from "next/image";
-import { actionsDropdownItems } from "@/constants";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-// import {
-//   deleteFile,
-//   renameFile,
-//   updateFileUsers,
-// } from "@/lib/actions/file.actions";
-import { usePathname } from "next/navigation";
-import { FileDetails } from "@/components/ActionsModalContent";
+import { RootState } from "@/redux/store";
 
-interface ActionType {
-  label: string;
-  icon: string;
-  value: string;
-}
-
-const ActionDropdown = ({ file }: { file: any }) => {
+const ActionDropdown = ({
+  name,
+  actionsDropdownItems,
+  data,
+  renderDetails,
+  fetchAction,
+}: {
+  name: "employees" | "paintingJobs";
+  data: Employee | PaintingJob;
+  actionsDropdownItems: ActionsDropdownItem[];
+  renderDetails: Function;
+  fetchAction: string | null;
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [action, setAction] = useState<ActionType | null>(null);
-  const [name, setName] = useState(file.name);
-  const [isLoading, setIsLoading] = useState(false);
-  const [emails, setEmails] = useState<string[]>([]);
 
-  const path = usePathname();
+  const dispatch = useDispatch();
+  const { loading, success } = useSelector((state: RootState) => {
+    return state[name];
+  });
+
+  useEffect(() => {
+    console.log({ action, loading, success });
+    if (action && !loading && success) {
+      fetchAction && dispatch({ type: fetchAction });
+      setAction(null);
+      closeAllModals();
+    }
+  }, [loading, success]);
 
   const closeAllModals = () => {
     setIsModalOpen(false);
     setIsDropdownOpen(false);
     setAction(null);
-    setName(file.name);
-    //   setEmails([]);
   };
 
-  const handleAction = async () => {
+  const handleAction = (type: string) => {
     if (!action) return;
-    setIsLoading(true);
-    let success = false;
 
-    const actions = {
-      rename: () => {
-        // renameFile({ fileId: file.$id, name, extension: file.extension, path })
-      },
-      delete: () => {
-        // deleteFile({ fileId: file.$id, bucketFileId: file.bucketFileId, path })
-      },
-    };
-
-    // success = await actions[action.value as keyof typeof actions]();
-
-    // if (success)
-    closeAllModals();
-
-    setIsLoading(false);
+    if (action.value === "approve") {
+      dispatch({ type, payload: { id: data.id } });
+    } else if (action.value === "delete") {
+      dispatch({ type, payload: { id: data.id } });
+    }
   };
 
   const renderDialogContent = () => {
     if (!action) return null;
 
-    const { value, label } = action;
+    const { value, label, type } = action;
 
     return (
       <DialogContent className="shad-dialog button">
@@ -85,29 +79,29 @@ const ActionDropdown = ({ file }: { file: any }) => {
           <DialogTitle className="text-center text-light-100">
             {label}
           </DialogTitle>
-          {value === "rename" && (
-            <Input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+          {value === "details" && renderDetails(data)}
+          {value === "approve" && (
+            <p className="approve-confirmation">
+              Are you sure you want to approve?
+            </p>
           )}
-          {value === "details" && <FileDetails file={file} />}
           {value === "delete" && (
             <p className="delete-confirmation">
-              Are you sure you want to delete{` `}
-              <span className="delete-file-name">{file.name}</span>?
+              Are you sure you want to delete?
             </p>
           )}
         </DialogHeader>
-        {["rename", "delete"].includes(value) && (
+        {["approve", "delete"].includes(value) && (
           <DialogFooter className="flex flex-col gap-3 md:flex-row">
             <Button onClick={closeAllModals} className="modal-cancel-button">
               Cancel
             </Button>
-            <Button onClick={handleAction} className="modal-submit-button">
+            <Button
+              onClick={() => handleAction(type || "")}
+              className="modal-submit-button"
+            >
               <p className="capitalize">{value}</p>
-              {isLoading && (
+              {loading && (
                 <Image
                   src="/assets/icons/loader.svg"
                   alt="loader"
@@ -140,31 +134,35 @@ const ActionDropdown = ({ file }: { file: any }) => {
               Action
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {actionsDropdownItems.map((actionItem) => (
-              <DropdownMenuItem
-                key={actionItem.value}
-                className="shad-dropdown-item"
-                onClick={() => {
-                  setAction(actionItem);
+            {actionsDropdownItems.map((actionItem) => {
+              return (
+                <DropdownMenuItem
+                  key={actionItem.value}
+                  className="shad-dropdown-item"
+                  onClick={() => {
+                    setAction(actionItem);
 
-                  if (
-                    ["rename", "delete", "details"].includes(actionItem.value)
-                  ) {
-                    setIsModalOpen(true);
-                  }
-                }}
-              >
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={actionItem.icon}
-                    alt={actionItem.label}
-                    width={30}
-                    height={30}
-                  />
-                  {actionItem.label}
-                </div>
-              </DropdownMenuItem>
-            ))}
+                    if (
+                      ["approve", "delete", "details"].includes(
+                        actionItem.value
+                      )
+                    ) {
+                      setIsModalOpen(true);
+                    }
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src={actionItem.icon}
+                      alt={actionItem.label}
+                      width={30}
+                      height={30}
+                    />
+                    {actionItem.label}
+                  </div>
+                </DropdownMenuItem>
+              );
+            })}
           </DropdownMenuContent>
         </DropdownMenu>
 

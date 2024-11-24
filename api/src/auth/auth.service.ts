@@ -11,13 +11,7 @@ import { SigninDto, SignupDto } from '@/auth/dto';
 import { PrismaService } from '@/prisma/prisma.service';
 import { User } from '@prisma/client';
 import { EmailService } from '@/email/email.service';
-
-type SignUpResponse = {
-  id: string;
-  fullName: string;
-  employeeCode: string;
-  email: string;
-};
+import { SignUpResponse } from '@/types';
 
 @Injectable()
 export class AuthService {

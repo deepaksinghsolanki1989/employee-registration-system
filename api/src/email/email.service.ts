@@ -1,14 +1,7 @@
+import { EmailOptions } from '@/types';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
-
-interface EmailOptions {
-  from?: string;
-  to: string;
-  subject: string;
-  text?: string;
-  html?: string;
-}
 
 @Injectable()
 export class EmailService {

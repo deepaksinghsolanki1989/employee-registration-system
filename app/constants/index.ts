@@ -1,45 +1,31 @@
-export const navItems = [
+export const adminNavItems = [
   {
     name: "Dashboard",
     icon: "/assets/icons/dashboard.svg",
     url: "/",
-    roles: ["admin", "employee"],
   },
   {
     name: "Employees",
     icon: "/assets/icons/documents.svg",
     url: "/employees",
-    roles: ["admin", "employee"],
   },
   {
-    name: "Arts",
+    name: "Painting Jobs",
     icon: "/assets/icons/images.svg",
-    url: "/arts",
-    roles: ["admin", "employee"],
-  },
-  {
-    name: "Change Password",
-    icon: "/assets/icons/others.svg",
-    url: "/change-password",
-    roles: ["admin", "employee"],
+    url: "/painting-jobs",
   },
 ];
 
-export const actionsDropdownItems = [
+export const employeesNavItems = [
   {
-    label: "Rename",
-    icon: "/assets/icons/edit.svg",
-    value: "rename",
+    name: "Dashboard",
+    icon: "/assets/icons/dashboard.svg",
+    url: "/",
   },
   {
-    label: "Details",
-    icon: "/assets/icons/info.svg",
-    value: "details",
-  },
-  {
-    label: "Delete",
-    icon: "/assets/icons/delete.svg",
-    value: "delete",
+    name: "Painting Jobs",
+    icon: "/assets/icons/images.svg",
+    url: "/painting-jobs",
   },
 ];
 

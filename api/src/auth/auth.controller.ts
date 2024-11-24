@@ -32,7 +32,6 @@ export class AuthController {
       data: null,
       error: null,
       message: 'User created successfully.',
-      statusCode: HttpStatus.CREATED,
     };
   }
 
@@ -50,7 +49,6 @@ export class AuthController {
       data,
       error: null,
       message: 'User login successfully.',
-      statusCode: HttpStatus.OK,
     };
   }
 
@@ -67,7 +65,6 @@ export class AuthController {
       data: user,
       error: null,
       message: 'User fetched successfully.',
-      statusCode: HttpStatus.OK,
     };
   }
 

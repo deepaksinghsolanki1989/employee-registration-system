@@ -11,18 +11,45 @@ datasource db {
 }
 
 model User {
-    id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+    id                  String                @id @default(auto()) @map("_id") @db.ObjectId
     fullName            String
     employeeCode        String?
-    email               String   @unique
+    email               String                @unique
     password            String
-    isEmailVerified     Boolean  @default(false)
-    isActive            Boolean  @default(false)
+    isEmailVerified     Boolean               @default(false)
+    isActive            Boolean               @default(false)
     emailToken          String?
     forgotPasswordToken String?
     refreshToken        String?
-    createdAt           DateTime @default(now())
-    updatedAt           DateTime @updatedAt
+    createdAt           DateTime              @default(now())
+    updatedAt           DateTime              @updatedAt
+    EmployeePaintingJob EmployeePaintingJob[]
 
     @@map("users")
+}
+
+model PaintingJob {
+    id                  String                @id @default(auto()) @map("_id") @db.ObjectId
+    title               String
+    description         String?
+    dueDate             DateTime?
+    createdAt           DateTime              @default(now())
+    updatedAt           DateTime              @updatedAt
+    EmployeePaintingJob EmployeePaintingJob[]
+
+    @@map("painting-jobs")
+}
+
+model EmployeePaintingJob {
+    id           String      @id @default(auto()) @map("_id") @db.ObjectId
+    employee     User        @relation(fields: [employeeId], references: [id])
+    employeeId   String      @db.ObjectId
+    job          PaintingJob @relation(fields: [jobId], references: [id])
+    jobId        String      @db.ObjectId
+    jobStartTime DateTime
+    jobEndTime   DateTime
+    createdAt    DateTime    @default(now())
+    updatedAt    DateTime    @updatedAt
+
+    @@map("employee-painting-jobs")
 }

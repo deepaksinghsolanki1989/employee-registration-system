@@ -9,12 +9,17 @@ import {
 import Image from "next/image";
 import React, { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Separator } from "@/components/ui/separator"
-import { avatarPlaceholderUrl, navItems } from "@/constants";
+import { Separator } from "@/components/ui/separator";
+import {
+  adminNavItems,
+  avatarPlaceholderUrl,
+  employeesNavItems,
+} from "@/constants";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-// import { signOutUser } from "@/lib/actions/user.actions";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 interface Props {
   fullName: string;
@@ -25,6 +30,8 @@ interface Props {
 const MobileNavigation = ({ fullName, employeeCode, email }: Props) => {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
+  const { user } = useSelector((state: RootState) => state.auth);
 
   const signOutUser = () => {};
 
@@ -68,7 +75,10 @@ const MobileNavigation = ({ fullName, employeeCode, email }: Props) => {
 
           <nav className="mobile-nav">
             <ul className="mobile-nav-list">
-              {navItems.map(({ url, name, icon }) => (
+              {(user?.employeeCode === ""
+                ? adminNavItems
+                : employeesNavItems
+              ).map(({ url, name, icon }) => (
                 <Link key={name} href={url} className="lg:w-full">
                   <li
                     className={cn(
