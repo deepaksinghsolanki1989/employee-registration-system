@@ -28,6 +28,7 @@ export class PaintingJobsService {
       },
     });
   }
+
   async findOne(id: string) {
     return await this.prisma.paintingJob.findFirst({
       select: {

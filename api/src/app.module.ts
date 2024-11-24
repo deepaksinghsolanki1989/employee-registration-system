@@ -6,6 +6,7 @@ import { PrismaModule } from '@/prisma/prisma.module';
 import { UsersModule } from '@/users/users.module';
 import { UserProfileModule } from '@/user-profile/user-profile.module';
 import { PaintingJobsModule } from './painting-jobs/painting-jobs.module';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { PaintingJobsModule } from './painting-jobs/painting-jobs.module';
     PrismaModule,
     UserProfileModule,
     PaintingJobsModule,
+    StatisticsModule,
   ],
   controllers: [],
   providers: [],
